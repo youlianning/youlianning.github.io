@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>FPGA Vitis开发：DMA驱动案例 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1654306599122">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="配置思路：
+
+定义设备ID，发送和接收数据数组
+定义中断处理函数
+dma配制
+清除cache
+dma传输数据
+清除cache
+处理数据
+
+初始数据定义
+#include &quot;xaxidma.h&quot;	//dma
+#includ..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1654306599122" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">FPGA Vitis开发：DMA驱动案例</h2>
+            <div class="post-date">2022-04-05</div>
+            
+            <div class="post-content" v-pre>
+              <p><strong>配置思路：</strong></p>
+<ol>
+<li>定义设备ID，发送和接收数据数组</li>
+<li>定义中断处理函数</li>
+<li>dma配制</li>
+<li>清除cache</li>
+<li>dma传输数据</li>
+<li>清除cache</li>
+<li>处理数据</li>
+</ol>
+<p><strong>初始数据定义</strong></p>
+<pre><code class="language-C">#include &quot;xaxidma.h&quot;	//dma
+#include &quot;xparameters.h&quot;//设备
+#include &quot;xscugic.h&quot;	//中断
+#include &quot;xil_printf.h&quot;	//串口
+
+#define DMA_DEV_ID 		XPAR_AXIDMA_0_DEVICE_ID						//DMA设备ID
+#define INT_DEVICE_ID 	XPAR_SCUGIC_SINGLE_DEVICE_ID				//中断设备ID
+#define INTR_S2MM_ID	XPAR_FABRIC_AXIDMA_0_S2MM_INTROUT_VEC_ID	//DMA接收中断ID
+
+#define FIFO_DATABYTE 	4							//FIFO内单个数据4字节
+#define TEST_COUNT 		80							//测试数据列长80个数据
+#define MAX_PKT_LEN 	TEST_COUNT*FIFO_DATABYTE	//分配地址长度
+
+#define TEST_START_VALUE	0xc						//初始测试数据
+
+#define NUMBER_OF_TRANSFERS	2						//测试次数
+
+int XAxiDma_Setup(u16 DeviceId);					//DMA配置函数
+static int CheckData(void);							//中断处理函数
+int SetInterruptInit(XScuGic *InstancePtr, u16 IntrID, XAxiDma *XAxiDmaPtr);	//中断配置函数
+
+XScuGic INST;	//中断控制器实例
+XAxiDma AxiDma;	//XAxiDma 实例
+
+u8 TxBufferPtr[MAX_PKT_LEN];	//发送数据列
+u8 RxBufferPtr[MAX_PKT_LEN];	//接收数据列
+</code></pre>
+<p><strong>主程序</strong></p>
+<pre><code class="language-c">int main()
+{
+	int Status;
+	xil_printf(&quot;\r\n--- Entering main() --- \r\n&quot;);
+
+	Status=XAxiDma_Setup(DMA_DEV_ID);
+	if(Status!=XST_SUCCESS){
+		xil_printf(&quot;XAxiDma Test Failed\r\n&quot;);
+		return XST_FAILURE;
+	}
+
+	xil_printf(&quot;Successfully Ran XAxiDma Test\r\n&quot;);
+	xil_printf(&quot;---Exiting main()---\r\n&quot;);
+	return XST_SUCCESS;
+}
+</code></pre>
+<p><strong>中断配置函数</strong></p>
+<pre><code class="language-c">int SetInterruptInit(XScuGic *InstancePtr, u16 IntrID, XAxiDma *XAxiDmaPtr)
+{
+
+	XScuGic_Config * Config ;
+	int Status ;
+
+	//初始化中断控制器驱动
+	Config = XScuGic_LookupConfig(INT_DEVICE_ID) ;
+	Status = XScuGic_CfgInitialize(&amp;INST, Config, Config-&gt;CpuBaseAddress) ;
+	if (Status != XST_SUCCESS)
+		return XST_FAILURE ;
+
+
+	//设置中断优先级和触发类型
+	//XScuGic_SetPriorityTriggerType(int_ins_ptr, tx_intr_id,0xa0,0x3);
+	//XScuGic_SetPriorityTriggerType(int_ins_ptr,rx_intr_id,0xA0,0x3);
+
+	//为中断设置中断处理函数
+	Status = XScuGic_Connect(InstancePtr, IntrID,
+			(Xil_ExceptionHandler)CheckData,	//此处写入中断处理函数
+			XAxiDmaPtr) ;
+	if (Status != XST_SUCCESS) {
+			return Status;
+		}
+
+	//使能中断
+	XScuGic_Enable(InstancePtr, IntrID) ;
+
+	//启用来自硬件的中断
+	Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler) XScuGic_InterruptHandler,InstancePtr);
+	Xil_ExceptionEnable();
+
+	return XST_SUCCESS ;
+
+}
+</code></pre>
+<p><strong>DMA配置函数</strong></p>
+<pre><code class="language-c">int XAxiDma_Setup(u16 DeviceId)
+{
+	XAxiDma_Config *CfgPtr;
+	int Status;
+	int Tries = NUMBER_OF_TRANSFERS;
+	int Index;
+	u8 Value;
+
+	//查找DMA硬件配置信息
+	CfgPtr = XAxiDma_LookupConfig(DeviceId);
+	if (!CfgPtr) {
+		xil_printf(&quot;No config found for %d\r\n&quot;, DeviceId);
+		return XST_FAILURE;
+	}
+
+	//初始化DMA引擎
+	Status = XAxiDma_CfgInitialize(&amp;AxiDma, CfgPtr);
+	if (Status != XST_SUCCESS) {
+		xil_printf(&quot;Initialization failed %d\r\n&quot;, Status);
+		return XST_FAILURE;
+	}
+
+	//判断有无使能sg模式，如果使能则返回错误
+	if(XAxiDma_HasSg(&amp;AxiDma)){
+		xil_printf(&quot;Device configured as SG mode \r\n&quot;);
+		return XST_FAILURE;
+	}
+
+	//中断函数初始化
+	Status = SetInterruptInit(&amp;INST,INTR_S2MM_ID, &amp;AxiDma) ;
+	if (Status != XST_SUCCESS)
+		         return XST_FAILURE ;
+
+	/* Disable MM2S interrupt, Enable S2MM interrupt */
+	//使能中断
+	//当DMA向DDR写完数据后，发送中断
+	XAxiDma_IntrEnable(&amp;AxiDma, XAXIDMA_IRQ_IOC_MASK,
+						XAXIDMA_DEVICE_TO_DMA);
+	XAxiDma_IntrDisable(&amp;AxiDma, XAXIDMA_IRQ_ALL_MASK,
+						XAXIDMA_DMA_TO_DEVICE);
+
+	//初始化发送数据数组
+	Value = TEST_START_VALUE;
+	for(Index = 0; Index &lt; MAX_PKT_LEN; Index ++) {
+			TxBufferPtr[Index] = Value;
+
+			Value = (Value + 1) &amp; 0xFF;
+	}
+	/* Flush the SrcBuffer before the DMA transfer, in case the Data Cache is enabled*/
+	//在发送数据前把cache里的数据写入到DDR中
+	/*由于DMA需要访问DDR3，而CPU与DDR3之间是通过Cache交互的，数据暂存在Cache里，
+	可能没有真正刷新到DDR3，如果外部设备也就是DMA想要读取
+	DDR3的值，必须将Cache里的数据刷新到DDR3中，这样DMA才能读到正确的值。调用
+	Xil_DCacheFlushRange函数，需要给出内存地址和长度。 */
+	Xil_DCacheFlushRange((UINTPTR)TxBufferPtr, MAX_PKT_LEN);
+	Xil_DCacheFlushRange((UINTPTR)RxBufferPtr, MAX_PKT_LEN);
+
+	for(Index = 0; Index &lt; Tries; Index ++) {
+			Status = XAxiDma_SimpleTransfer(&amp;AxiDma,(UINTPTR) TxBufferPtr,MAX_PKT_LEN, XAXIDMA_DMA_TO_DEVICE);
+			if (Status != XST_SUCCESS) {
+				return XST_FAILURE;
+			}
+
+			//虽然看起来读和写都同时打开，但由于stream流的协议，会等待FIFO里有数据才开始传输
+		    Status = XAxiDma_SimpleTransfer(&amp;AxiDma,(UINTPTR) RxBufferPtr,MAX_PKT_LEN, XAXIDMA_DEVICE_TO_DMA);
+			if (Status != XST_SUCCESS) {
+				return XST_FAILURE;
+			}
+
+			//确保cache写入到DDR当中
+			while ((XAxiDma_Busy(&amp;AxiDma,XAXIDMA_DEVICE_TO_DMA)) ||
+				(XAxiDma_Busy(&amp;AxiDma,XAXIDMA_DMA_TO_DEVICE)))
+					{
+					/* Wait */
+			}
+
+		}
+
+		/* Test finishes successfully
+		 */
+		return XST_SUCCESS;
+}
+</code></pre>
+<p><strong>中断处理函数</strong></p>
+<pre><code class="language-c">static int CheckData(void)
+{
+	u8 *RxPacket;
+	int Index = 0;
+	u8 Value;
+
+	RxPacket = RxBufferPtr;
+	Value = TEST_START_VALUE;
+
+	xil_printf(&quot;Enter Interrupt\r\n&quot;);
+	/*清除中断标志位*/
+	XAxiDma_IntrAckIrq(&amp;AxiDma, XAXIDMA_IRQ_IOC_MASK,XAXIDMA_DEVICE_TO_DMA) ;
+	/* Invalidate the DestBuffer before receiving the data, in case the Data Cache is enabled*/
+	/*在中断服务程序中，首先清除中断，由于 DDR3 中的数据已经更新，但 Cache 中的数据并
+	没有更新，CPU 如果想从 DDR3 中读取数据，需要调用 Xil_DCacheInvalidateRang 函数，将
+	Cache 数据作废，这样 CPU 就能从 DDR3 中读取正确的数据。同样也要给出内存地址和长
+	度。*/
+	Xil_DCacheInvalidateRange((UINTPTR)RxPacket, MAX_PKT_LEN);
+	//数据比对
+	for(Index = 0; Index &lt; MAX_PKT_LEN; Index++) {
+		if (RxPacket[Index] != Value) {
+			xil_printf(&quot;Data error %d: %x/%x\r\n&quot;,
+			Index, (unsigned int)RxPacket[Index],
+				(unsigned int)Value);
+
+			return XST_FAILURE;
+		}
+		Value = (Value + 1) &amp; 0xFF;
+	}
+	return XST_SUCCESS;
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/fpga-verilog-yu-fa-generate-de-yong-fa/">
+                  <h3 class="post-title">
+                    FPGA Verilog语法：generate的用法
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '612753f543fd5636d4ef',
+        clientSecret: 'e316f3985d9160601a36f09984601e30868efbb7',
+        repo: 'youlianning.github.io',
+        owner: 'youlianning',
+        admin: ['youlianning'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>历史的发展规律 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1654306599122">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="
+  人类的历史，就是一个不断的从必然王国走向自由王国发展的历史。这个历史永远不会完结。在生产斗争，与科学实验的范围内，人类，总是不断发展的。自然界，也总是不断发展的。永远不会停止在一个水平上。因此，人类总得不断地总结经验，有所发现，有所发..." />
+    <meta name="keywords" content="毛泽东" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1654306599122" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">历史的发展规律</h2>
+            <div class="post-date">2021-12-28</div>
+            
+              <div class="feature-container" style="background-image: url('https://youlianning.github.io/post-images/li-shi-de-fa-zhan-gui-lu.png')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <!-- more -->
+<p>  人类的历史，就是一个不断的从必然王国走向自由王国发展的历史。这个历史永远不会完结。在生产斗争，与科学实验的范围内，人类，总是不断发展的。自然界，也总是不断发展的。永远不会停止在一个水平上。因此，人类总得不断地总结经验，有所发现，有所发明，有所创造，有所前进，停止的论点，悲观的论点，无所作为和骄傲自满的论点，都是错误的。</p>
+<p>​                                                            																																				 ——毛泽东</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/tvpTekSBz/" class="tag">
+                    毛泽东
+                  </a>
+                
+              </div>
+            
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '612753f543fd5636d4ef',
+        clientSecret: 'e316f3985d9160601a36f09984601e30868efbb7',
+        repo: 'youlianning.github.io',
+        owner: 'youlianning',
+        admin: ['youlianning'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

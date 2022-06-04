@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Xilinx·Zynq]ARM和PL通过DMA通信时如何保证DDR数据的正确性 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1654306599122">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="转载来源：csdn
+使用ZYNQ或者MPSoC的好处是可以通过PL逻辑设计硬件加速器，对功能进行硬件加速。加速器和ARM之间的交互信息一般包含自定义加速指令传递、待计算数据以及计算结果。这三种交互信息为了实现高性能往往需要使用DMA进行通信..." />
+    <meta name="keywords" content="FPGA" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1654306599122" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Xilinx·Zynq]ARM和PL通过DMA通信时如何保证DDR数据的正确性</h2>
+            <div class="post-date">2022-03-17</div>
+            
+            <div class="post-content" v-pre>
+              <p>转载来源：<a href="https://blog.csdn.net/weixin_38712697/article/details/99693531?utm_source=app&amp;app_version=4.9.0&amp;code=app_1562916241&amp;uLinkId=usr1mkqgl919blen">csdn</a></p>
+<p>使用ZYNQ或者MPSoC的好处是可以通过PL逻辑设计硬件加速器，对功能进行硬件加速。加速器和ARM之间的交互信息一般包含自定义加速指令传递、待计算数据以及计算结果。这三种交互信息为了实现高性能往往需要使用DMA进行通信。考虑两种场景，一种是ARM将运算数据的结果或者一些待处理数据发往PL侧加速，一种是PL处理结果DMA传输到DDR内存，ARM读取数据接着处理。当有操作系统管理内存时，这些操作没什么问题，PL看到的DDR数据总是更新过的；ARM接收到DMA中断后，读取内存数据，总能读取到更新后的数据。但如果在SDK环境下裸调，由于Dcache的存在，CPU和PL往往发现看到的是部份更新的数据，因此需要在代码中加入对Dcache的处理。主要有两种方法</p>
+<p>第一种方法：简单粗暴，直接将cache关闭，这时不使用cache，无论是CPU还是PL都是直接更新DDR中的数据，所以不存在Cache一致性的问题。</p>
+<p>初始化的时候加入以下以下语句：</p>
+<blockquote>
+<p>#include &quot;xil_cache.h&quot;</p>
+<p>Xil_DCacheDisable();<br>
+Xil_ICacheDisable();</p>
+</blockquote>
+<p>但这种方法有缺陷，由于Cache关闭，CPU计算的中间结果保存在DDR内存中，每次取数据从DDR取，而不是Cache，因此性能会急剧下降。</p>
+<p>第二种方法：</p>
+<p>CPU传数据给外设，CPU写完数据后，其实数据存在Dcache中，这时需要cache中关联地址的cacheline刷新到内存中：</p>
+<p>Xil_DCacheFlushRange(DDR_BASE,Length);//里面参数分别放传输数据的DDR地址，数据长度（字节为单位）</p>
+<p>PL外设传输数据给CPU，CPU接着处理。由于CPU首先从Dcache中查看是否有DDR的关联内容，如果有的话，直接从cache取，这就带来问题，因为最新数据在DDR中，而不在cache中，因此正确的做法是在DMA传送开始前，将cache中与该DDR地址的关联部份做一次invalid，这样CPU读取时发现cache没有关联的cacheline，就会直接从DDR取数据，从而保证获取的数是更新过的。</p>
+<p>因此在把DMA地址告诉PL外设，在启动传输前，做一次cacheline的invalid操作：</p>
+<p>Xil_DCacheInvalidateRange(IMAGES_OUT_BASE &amp; 0xffffffc0,(length/cache_line_size+1)*cache_line_size); //注意地址必须cacheline对齐。长度也必须cache line对齐。</p>
+<p>其中coretex-A9的cache_line_size是32字节， A53是64字节。</p>
+<p>总结：在SDK裸跑环境下要保持cache一致性，要不关闭cache，降低性能；要不代码中需要在合适的地方插入cache flush或者invalid语句。</p>
+<p>原则是：CPU批量写的数据，需要更新到DDR中给其他设备使用，做Dcacheflush，保证其他设备看到最新数据。CPU想要直接用DDR中的数据，做InvalidDcacheFlush，保证cache中是被外设更新过的数据，invalid时注意cache line对齐。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/3rNNS9n_8/" class="tag">
+                    FPGA
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/lesslessindistractablegreatergreater-ru-he-zhuan-xin-ru-he-rang-ni-de-gong-zuo-huan-jing-bian-de-bu-yi-gan-rao-27/">
+                  <h3 class="post-title">
+                    《Indistractable》【如何专心】如何让你的工作环境变得不易干扰(27)
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '612753f543fd5636d4ef',
+        clientSecret: 'e316f3985d9160601a36f09984601e30868efbb7',
+        repo: 'youlianning.github.io',
+        owner: 'youlianning',
+        admin: ['youlianning'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

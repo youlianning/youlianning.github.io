@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>LaTex下载与安装 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1654306599122">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="下载
+打开下载清华源下载地址
+选择texlive.iso并下载
+安装
+下载好后，解压缩，安装，有人推荐建议安装在C盘，因为关于LaTex的很多插件会去默认的地址里找文件，但是由于我嫌弃它太大了，所以换了安装路径，各位请自便。
+安装好后，打开..." />
+    <meta name="keywords" content="latex" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1654306599122" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">LaTex下载与安装</h2>
+            <div class="post-date">2022-04-18</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="下载">下载</h2>
+<p>打开下载<a href="https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/">清华源下载地址</a></p>
+<p>选择<code>texlive.iso</code>并下载</p>
+<h2 id="安装">安装</h2>
+<p>下载好后，解压缩，安装，有人推荐建议安装在C盘，因为关于LaTex的很多插件会去默认的地址里找文件，但是由于我嫌弃它太大了，所以换了安装路径，各位请自便。</p>
+<p>安装好后，打开vscode，安装<code>LaTeX Workshop</code>这个插件</p>
+<p>打开vscode的setting.json文件，正确拷贝如下内容进行配置</p>
+<pre><code class="language-json">    //latex配置[开始]
+    &quot;latex-workshop.latex.tools&quot;: [
+        {
+            &quot;name&quot;: &quot;latexmk&quot;,
+            &quot;command&quot;: &quot;latexmk&quot;,
+            &quot;args&quot;: [
+                &quot;-synctex=1&quot;,
+                &quot;-interaction=nonstopmode&quot;,
+                &quot;-file-line-error&quot;,
+                &quot;-pdf&quot;,
+                &quot;%DOC%&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;xelatex&quot;,
+            &quot;command&quot;: &quot;xelatex&quot;,
+            &quot;args&quot;: [
+                &quot;-synctex=1&quot;,
+                &quot;-interaction=nonstopmode&quot;,
+                &quot;-file-line-error&quot;,
+                &quot;%DOC%&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;xelatexArg&quot;,
+            &quot;command&quot;: &quot;xelatex&quot;,
+            &quot;args&quot;: [
+                &quot;-synctex=1&quot;,
+                &quot;-interaction=nonstopmode&quot;,
+                &quot;-file-line-error&quot;,
+                &quot;-shell-escape&quot;,
+                &quot;%DOC%&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;pdflatex&quot;,
+            &quot;command&quot;: &quot;pdflatex&quot;,
+            &quot;args&quot;: [
+                &quot;-synctex=1&quot;,
+                &quot;-interaction=nonstopmode&quot;,
+                &quot;-file-line-error&quot;,
+                &quot;%DOC%&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;bibtex&quot;,
+            &quot;command&quot;: &quot;bibtex&quot;,
+            &quot;args&quot;: [
+                &quot;%DOCFILE%&quot;
+            ]
+        }
+    ],
+    &quot;latex-workshop.latex.recipes&quot;: [
+        {
+            &quot;name&quot;: &quot;xelatex&quot;,
+            &quot;tools&quot;: [
+                &quot;xelatex&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;xelatexWithArg&quot;,
+            &quot;tools&quot;: [
+                &quot;xelatexArg&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;latexmk&quot;,
+            &quot;tools&quot;: [
+                &quot;latexmk&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;pdflatex -&gt; bibtex -&gt; pdflatex*2&quot;,
+            &quot;tools&quot;: [
+                &quot;pdflatex&quot;,
+                &quot;bibtex&quot;,
+                &quot;pdflatex&quot;,
+                &quot;pdflatex&quot;
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;xelatex-&gt;bibtex-&gt;xelatex-&gt;xelatex&quot;,
+            &quot;tools&quot;: [
+                &quot;xelatex&quot;,
+                &quot;bibtex&quot;,
+                &quot;xelatex&quot;,
+                &quot;xelatex&quot;,
+            ]
+        },
+        {
+            &quot;name&quot;: &quot;xelatexArg-&gt;bibtex-&gt;xelatexArg-&gt;xelatexArg&quot;,
+            &quot;tools&quot;: [
+                &quot;xelatexArg&quot;,
+                &quot;bibtex&quot;,
+                &quot;xelatexArg&quot;,
+            ]
+        }
+    ],
+    &quot;latex-workshop.view.pdf.viewer&quot;: &quot;browser&quot;,
+    &quot;latex-workshop.latex.clean.fileTypes&quot;: [
+        &quot;*.aux&quot;,
+        &quot;*.bbl&quot;,
+        &quot;*.blg&quot;,
+        &quot;*.idx&quot;,
+        &quot;*.ind&quot;,
+        &quot;*.lof&quot;,
+        &quot;*.lot&quot;,
+        &quot;*.out&quot;,
+        &quot;*.toc&quot;,
+        &quot;*.acn&quot;,
+        &quot;*.acr&quot;,
+        &quot;*.alg&quot;,
+        &quot;*.glg&quot;,
+        &quot;*.glo&quot;,
+        &quot;*.gls&quot;,
+        &quot;*.ist&quot;,
+        &quot;*.fls&quot;,
+        &quot;*.log&quot;,
+        &quot;*.fdb_latexmk&quot;
+    ],
+    //下面这段是语法检查模块
+    //{
+    &quot;ltex.enabled&quot;: true,
+    &quot;[jsonc]&quot;: {
+        &quot;editor.defaultFormatter&quot;: &quot;vscode.json-language-features&quot;
+    },
+    &quot;latex-workshop.latex.recipe.default&quot;: &quot;lastUsed&quot;,
+    &quot;latex-workshop.view.outline.sections&quot;: [
+        &quot;part&quot;,
+        &quot;chapter&quot;,
+        &quot;Csection&quot;,
+        &quot;section&quot;,
+        &quot;subsection&quot;,
+        &quot;subsubsection&quot;,
+        
+    ],
+    &quot;editor.wordWrap&quot;: &quot;on&quot;,
+    &quot;workbench.editorAssociations&quot;: {
+        &quot;*.ipynb&quot;: &quot;jupyter-notebook&quot;
+    },
+    &quot;latex-workshop.latex.autoBuild.run&quot;: &quot;never&quot;,
+    &quot;editor.accessibilitySupport&quot;: &quot;off&quot;,
+    &quot;pyqt-integration.qtdesigner.path&quot;: &quot;/Applications/Qt Designer.app/Contents/MacOS/Designer&quot;,
+    &quot;editor.suggestSelection&quot;: &quot;first&quot;,
+    &quot;vsintellicode.modify.editor.suggestSelection&quot;: &quot;automaticallyOverrodeDefaultValue&quot;,
+    &quot;lsby_gitee_vscode_plugin.personal_access_tokens&quot;: &quot;096eca87ccee46e0c0cdcb826b816cb3&quot;,
+    &quot;latex-workshop.intellisense.bibtexJSON.replace&quot;: {
+    
+    }
+    //latex配置[结束]
+</code></pre>
+<p>然后就可以正常使用了，关于其它一些配置，可以参考如下链接：<a href="https://zhuanlan.zhihu.com/p/350249305">latex---vscode编辑器配置及快捷键</a></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/UK9dyok5i/" class="tag">
+                    latex
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/latex-ji-ben-yu-fa-zi-yong-bi-ji/">
+                  <h3 class="post-title">
+                    LaTex基本语法（自用笔记）
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '612753f543fd5636d4ef',
+        clientSecret: 'e316f3985d9160601a36f09984601e30868efbb7',
+        repo: 'youlianning.github.io',
+        owner: 'youlianning',
+        admin: ['youlianning'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

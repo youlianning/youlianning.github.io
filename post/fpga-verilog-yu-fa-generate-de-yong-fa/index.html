@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>FPGA Verilog语法：generate的用法 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1654306599122">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="本文转载自：verilog中generate语句的用法_李海川的技术博客_51CTO博客
+**作用：**生成语句可以动态地生成verilog代码，当对矢量中的多个位进行 重复操作 时，或者当进行多个模块的实例引用的重复操作时，或者根据参数的..." />
+    <meta name="keywords" content="FPGA" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1654306599122" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">FPGA Verilog语法：generate的用法</h2>
+            <div class="post-date">2022-04-05</div>
+            
+            <div class="post-content" v-pre>
+              <p>本文转载自：<a href="https://blog.51cto.com/lihaichuan/1118866">verilog中generate语句的用法_李海川的技术博客_51CTO博客</a></p>
+<p>**作用：**生成语句可以动态地生成verilog代码，当对矢量中的多个位进行 重复操作 时，或者当进行多个模块的实例引用的重复操作时，或者根据参数的定义来确定程序中是否应该包含某段Verilog代码的时候，使用生成语句能大大简化程序的编写过程。</p>
+<p>生成语句生成的实例范围，关键字generate-endgenerate用来指定该范围。生成实例可以是以下的一个或多个类型：</p>
+<table>
+<thead>
+<tr>
+<th>（1）模块</th>
+<th>（2）用户定义原语</th>
+<th>（3）门级语句</th>
+<th>（4）连续赋值语句</th>
+<th>（5）initial和always块</th>
+</tr>
+</thead>
+</table>
+<p>​    generate语句有【generate-for】，【generate-if】，【generate-case】三种语句。</p>
+<blockquote>
+<p>generate-for语句</p>
+<p>（1) 必须有genvar关键字定义for语句的变量。</p>
+<p>（2）for语句的内容必须加begin和end（即使就一句）。</p>
+<p>（3）for语句必须有个名字。</p>
+</blockquote>
+<pre><code class="language-verilog">//例1：组合逻辑实现
+module test(bin,gray);
+
+    parameter SIZE=8;
+
+    output [SIZE-1:0] bin;
+
+    input [SIZE-1:0] gray;
+
+    genvar i; //genvar i;也可以定义到generate语句里面
+
+    generate
+
+       for(i=0;i&lt;SIZE;i=i+1)
+
+       begin:bit
+
+           assign bin[i]=^gray[SIZE-1:i];
+
+       end
+
+    endgenerate
+
+endmodule   
+
+//等同于下面语句
+
+assign bin[0]=^gray[SIZE-1:0];
+
+assign bin[1]=^gray[SIZE-1:1];
+
+assign bin[2]=^gray[SIZE-1:2];
+
+assign bin[3]=^gray[SIZE-1:3];
+
+assign bin[4]=^gray[SIZE-1:4];
+
+assign bin[5]=^gray[SIZE-1:5];
+
+assign bin[6]=^gray[SIZE-1:6];
+
+assign bin[7]=^gray[SIZE-1:7];
+</code></pre>
+<pre><code class="language-verilog">//例2:时序逻辑实现
+
+generate
+
+    genvar i;
+
+    for(i=0;i&lt;SIZE;i=i+1)
+
+    begin:shifter
+
+       always@(posedge clk)
+
+           shifter[i]&lt;=(i==0)?din:shifter[i-1];
+
+    end
+
+endgenerate
+
+//等同于下面语句
+
+always@(posedge clk)
+
+    shifter[0]&lt;=din;
+
+always@(posedge clk)
+
+    shifter[1]&lt;=shifter[0];
+
+always@(posedge clk)
+
+    shifter[2]&lt;=shifter[1];
+
+.................
+
+    ......................
+
+always@(posedge clk)
+
+    shifter[SIZE]&lt;=shifter[SIZE-1];
+
+//generate-if，generate-case和generate-for语句类似。
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/3rNNS9n_8/" class="tag">
+                    FPGA
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/xilinxzynqarm-he-pl-tong-guo-dma-tong-xin-shi-ru-he-bao-zheng-ddr-shu-ju-de-zheng-que-xing/">
+                  <h3 class="post-title">
+                    [Xilinx·Zynq]ARM和PL通过DMA通信时如何保证DDR数据的正确性
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '612753f543fd5636d4ef',
+        clientSecret: 'e316f3985d9160601a36f09984601e30868efbb7',
+        repo: 'youlianning.github.io',
+        owner: 'youlianning',
+        admin: ['youlianning'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
