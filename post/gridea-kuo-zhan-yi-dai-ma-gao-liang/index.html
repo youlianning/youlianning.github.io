@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Gridea扩展(一)- 代码高亮 | 远远的博客</title>
+<meta name="description" content="星星之火，可以燎原">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662556823165">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://youlianning.github.io">
+        <img class="avatar" src="https://youlianning.github.io/images/avatar.png?v=1662556823165" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://youlianning.github.io">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Gridea扩展(一)- 代码高亮</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-04-09</span>
+            
+          </div>
+          <div class="post-content">
+            <p>参考链接：<a href="https://geraltxli.github.io/post/gridea-kuo-zhan/">Gridea扩展(一)- 代码高亮 | GeraltXLi</a></p>
+<blockquote>
+<p>没想到Gridea默认没有代码高亮，那只能自己来了，使用<strong>highlightjs</strong>，修改一下主题里代码， 引入一下就好了。</p>
+</blockquote>
+<h2 id="代码高亮">代码高亮</h2>
+<ol>
+<li>下载<a href="https://highlightjs.org/">highlight.js</a>，点<code>Get Version</code>去下载，里面也不少各种语言等之类的选择，一般默认就够用了</li>
+<li>下载完后解压，简单点就把整个文件夹<code>highlight</code>都丢到gridea数据目录的<code>static</code>目录下（不过其实也可以直接copy里面的<code>highlight.pack.js</code>和<code>styles</code>目录）</li>
+<li>去数据目录下的<code>themes</code>目录下修改，一般只有文章会用到，找到想要修改的主题，直接修改<code>post.ejs</code>。在head里加几行代码就行了，这里我选了<code>github-dark</code>样式，这个看自己爱好</li>
+</ol>
+<pre><code class="language-javascript">    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;&lt;%= themeConfig.domain %&gt;/highlight/styles/github-dark.min.css&quot;&gt;
+    &lt;script src=&quot;&lt;%= themeConfig.domain %&gt;/highlight/highlight.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;hljs.initHighlightingOnLoad();&lt;/script&gt;
+</code></pre>
+<p><strong>注意：</strong> 下载下文件后，内部的文件名不一定对应的上，需要打开下载的文件，查看匹配修改一下名字，与js设置里的路径对应。</p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://youlianning.github.io/post/fpga-vitismipi-she-xiang-tou-tu-xiang-vdma-chuan-shu-dp-kou-shu-chu-dai-ma-kuang-jia/">
+              <h3 class="post-title">
+                下一篇： FPGA Vitis：mipi摄像头图像VDMA传输DP口输出代码框架
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">星星之火，可以燎原</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

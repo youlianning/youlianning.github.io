@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Python多进程 | 远远的博客</title>
+<meta name="description" content="星星之火，可以燎原">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662556823165">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://youlianning.github.io">
+        <img class="avatar" src="https://youlianning.github.io/images/avatar.png?v=1662556823165" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://youlianning.github.io">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">Python多进程</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-08-08</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://youlianning.github.io/tag/p6AWEh0boD/">
+                    python
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <p><strong>为什么要多进程</strong>：为了提高运算速度！多进程相当于将简单重复的任务分配到多个cpu内核上，让它们同时做互不相关的工作，从而提高系统的运行效率。</p>
+<p><strong>测试例程①</strong></p>
+<pre><code class="language-python">import random
+import time
+from multiprocessing import Pool
+
+data = [(random.randint(1, 1000), random.randint(1, 1000)) for _ in range(10000)]
+
+
+# 函数式编程
+# 第一步：创建管道函数
+def greatest_common_factor(a, b):
+    &quot;&quot;&quot;
+    此函数求取输入两个参数的最大公因数
+    :param a:
+    :param b:
+    :return:
+    &quot;&quot;&quot;
+    r = a % b
+    while r != 0:
+        a = b
+        b = r
+        r = a % b
+    return b
+
+
+def simplify(pair):
+    &quot;&quot;&quot;
+    此函数将输入的数据对转化为最简形式
+    :param pair:
+    :return:
+    &quot;&quot;&quot;
+    n1, n2 = pair
+    m = greatest_common_factor(n1, n2)
+    return int(n1 / m), int(n2 / m)
+
+
+if __name__ == '__main__':
+    # 第二步：将数据输入管道
+    t1 = time.time()
+    res1 = map(simplify, data)
+    res1 = list(res1)
+    t2 = time.time()
+    print(t2 - t1)
+
+    p = Pool(processes=4)
+    t3 = time.time()
+    res2 = p.map(simplify, data)
+    res2 = list(res2)
+    p.close()  # 关闭进程池，不再接受新的进程
+    p.join()  # 主进程阻塞，等待子进程推出
+    t4 = time.time()
+    print(t4 - t3)
+
+# (t2 - t1) = 0.004999637603759766
+# (t4 - t3) = 0.3481013774871826
+</code></pre>
+<p><strong>点评</strong>：我们能发现，在这个案例中，开了多进程的处理程序反而更慢一些，这违反了我们的直觉。事实上，这是因为我们处理的过程比较简单，所以python底层对其优化做的比较好，不需要通过调用多进程的方式进行加速。如果我们需要体现出多进程的优势，那么就需要模拟进行复杂计算的过程，如下所示</p>
+<p><strong>测试例程②</strong></p>
+<pre><code class="language-python">import random
+import time
+from multiprocessing import Pool
+
+data = [(random.randint(1, 1000), random.randint(1, 1000)) for _ in range(20)]
+
+
+# 函数式编程
+# 第一步：创建管道函数
+def greatest_common_factor(a, b):
+    &quot;&quot;&quot;
+    此函数求取输入两个参数的最大公因数
+    :param a:
+    :param b:
+    :return:
+    &quot;&quot;&quot;
+    r = a % b
+    while r != 0:
+        a = b
+        b = r
+        r = a % b
+    return b
+
+
+def simplify(pair):
+    &quot;&quot;&quot;
+    此函数将输入的数据对转化为最简形式
+    :param pair:
+    :return:
+    &quot;&quot;&quot;
+    n1, n2 = pair
+    m = greatest_common_factor(n1, n2)
+    # 模拟进行耗时的复杂运算
+    time.sleep(0.1)
+    return int(n1 / m), int(n2 / m)
+
+
+if __name__ == '__main__':
+    # 第二步：将数据输入管道
+    t1 = time.time()
+    res1 = map(simplify, data)
+    res1 = list(res1)
+    t2 = time.time()
+    print(t2 - t1)
+
+    p = Pool(processes=4)
+    t3 = time.time()
+    res2 = p.map(simplify, data)
+    res2 = list(res2)
+    p.close()  # 关闭进程池，不再接受新的进程
+    p.join()  # 主进程阻塞，等待子进程推出
+    t4 = time.time()
+    print(t4 - t3)
+
+# (t2 - t1) = 2.1878116130828857
+# (t4 - t3) = 0.9278745651245117
+</code></pre>
+<p><strong>参考资料</strong>：<a href="https://www.pythonheidong.com/blog/article/808006/ad82e3caefe1e9e092db/">为什么pool.map比普通地图慢？-python黑洞网 (pythonheidong.com)</a></p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://youlianning.github.io/post/python-han-shu-shi-bian-cheng/">
+              <h3 class="post-title">
+                下一篇：Python函数式编程
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">星星之火，可以燎原</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

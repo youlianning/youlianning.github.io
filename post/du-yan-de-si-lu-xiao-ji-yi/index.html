@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>读研的思路小记（一） | 远远的博客</title>
+<meta name="description" content="星星之火，可以燎原">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662556823165">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://youlianning.github.io">
+        <img class="avatar" src="https://youlianning.github.io/images/avatar.png?v=1662556823165" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://youlianning.github.io">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">读研的思路小记（一）</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2021-12-28</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://youlianning.github.io/tag/rTjsz1xQh/">
+                    读研
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <p>1️⃣ 先从传统图像处理开始，图像处理基础要打牢固。再去探索深度学习。传统图像处理的话可以看冈萨雷斯的数字图像处理，毛星云写的opencv3编程入门，装一个vs，跑一跑opencv，把流程熟悉起来。最好看一看一些经典的算法是怎么构成的，不要只调一调包，调一调参数。玩图像的最后都逃不开deep，深度学习神经网络从15年火到现在，但其实也只是一种提取特征的方式，是一种工具，不要神化他（但有时候是真的香）。</p>
+<p>2️⃣ 一定要等传统图像处理基础打牢后，再探索神经网络。（要有图像领域的概念，再去魔改模型）神经网络打基础可以从斯坦福网课cs231N看起，装一个pycharm，每天听课跟着老师敲一敲python，等听完这个课，神经网络你就大概知道是干啥的了。再开始阅读论文。不要只做调参侠，多总结多思考。</p>
+<p>3️⃣ 感觉cv这个行业还有两个硬性指标，一个是英语，一个是编程。很多前沿论文都是英文原文，你要第一时间follow的话，没有别人的解析，只能自己啃，好多经典论文，虽然论坛有很多解读，但都是别人咀嚼过的，还是原著最接近真实意思。所以能读还是要读原文。比如三大会的论文cvpr iccv eccv编程也是重中之重。最起码C➕➕和python你得精通一个吧，另一个还得熟悉吧。不然就算你有好的点子你也实现不了啊（这个行业知识更新特别快，等有一个极佳的idea，码了一周的代码，别人估计相同的idea论文都快写完了）。记得曾经老师说，我们当时都是手写sift代码，现在到了我们，用opencv就是一句话。但是掌握不了精髓，掌握不了思想，就沉淀不下来知识。</p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://youlianning.github.io/post/li-shi-de-fa-zhan-gui-lu/">
+              <h3 class="post-title">
+                下一篇：历史的发展规律
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">星星之火，可以燎原</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

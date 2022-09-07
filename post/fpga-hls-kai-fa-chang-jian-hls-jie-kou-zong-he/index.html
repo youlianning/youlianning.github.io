@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>FPGA HLS开发：常见HLS接口综合 | 远远的博客</title>
+<meta name="description" content="星星之火，可以燎原">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662556823165">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://youlianning.github.io">
+        <img class="avatar" src="https://youlianning.github.io/images/avatar.png?v=1662556823165" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://youlianning.github.io">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">FPGA HLS开发：常见HLS接口综合</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-04-07</span>
+            
+          </div>
+          <div class="post-content">
+            <p><strong>HLS接口主要分为三类：</strong></p>
+<ul>
+<li>clock and reset interface</li>
+<li>block level interface (主要综合对象)</li>
+<li>port level interface (主要综合对象)</li>
+</ul>
+<h2 id="block-level-interface">Block Level Interface</h2>
+<p><strong>主要分为三类：</strong></p>
+<ul>
+<li>ap_ctrl_none</li>
+<li>ap_ctrl_hs</li>
+<li>ap_ctrl_chain</li>
+</ul>
+<blockquote>
+<p><strong>注释：</strong> “ap”的头是历史遗留问题，并没有什么具体的意思。Xilinx的HLS工具是2011年从一个叫AutoSEL的公司中购买的，而那个公司管这个工具叫做AutoPilot (ap)；不知道是什么原因这个东西就没改过，所以到现在HLS中重要的信号和datatype仍然以ap_前缀开头。</p>
+<p>注释来源：<a href="https://zhuanlan.zhihu.com/p/97085167">Xilinx HLS中ap前缀的意义 - 知乎 (zhihu.com)</a></p>
+</blockquote>
+<ol>
+<li><strong>ap_ctrl_none</strong>: 没有 Block Level interface</li>
+<li><strong>ap_ctrl_hs</strong>:
+<ul>
+<li>ap_start: 捕捉到上升沿时hls的topfunction开始执行</li>
+<li>ap_idle: 在 topfunction 开始执行之后处于低电平，执行完成之后处于高电平</li>
+<li>ap_ready: 处于高电平时表示 topfunction 准备完毕，开始执行之后处于低电平</li>
+<li>ap_done: 在 topfunction 执行完成之后处于高电平，当 ap_start 捕捉到上升沿之后重新处于低电平</li>
+</ul>
+</li>
+<li><strong>ap_ctrl_chain</strong>: 比 ap_ctrl_hs 多一个 ap_continue 接口，如果在 topfunction 执行完成之后 ap_continue 处于低电平，此时 IP 核会终止运行，只有在 ap_continue 被置于高电平才会开始新 一轮运行。</li>
+</ol>
+<h2 id="port-level-interface">Port Level Interface</h2>
+<p><strong>主要分为4类：</strong></p>
+<ul>
+<li>AXI4 Interface</li>
+<li>No I/O Interface</li>
+<li>wire handshake</li>
+<li>memory Interface</li>
+</ul>
+<ol>
+<li>
+<p><strong>AXI4 Interface</strong>：</p>
+<ol>
+<li>
+<p>axi：axi-stream 接口，包含 side-channel 和 without side-channel 两类，通常用于接外界连续输入的数据，比如我们想把若干组数据从 PS 端送入 PL 端，可以将 IP 核输入设置为 axi类型接口</p>
+</li>
+<li>
+<p>m_axi：master 模式的 axi-full 接口，HLS 作为主模式，从 PS 端读写数据，多用于将数据通过AXI-HP接口送入PS端，与DDR通信</p>
+<p><strong>注意：</strong> 如果将接口设置为 m_axi 模式会涉及到一个读写延时的问题，整体大概在 30cycles 左右， 涉及到一个叫 burst transfer 的优化，用合适的读写 DDR 的方法可以在一定程度上提升数据处理 的整体速度</p>
+</li>
+<li>
+<p>s_axilite: axi-lite 接口，属于轻量级的 axi 接口，通常用于和 PS 端 CPU 数据交互，多和 AXI-GP 接口相连，用于送入 CPU 提供的配置信息或向 CPU 写入配置信息。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>NO I/O Interface</strong>：</p>
+<ol>
+<li>ap_none: 多接单个数据，没有任何相关联的其他信号，属于默认参数接口。</li>
+<li>ap_stable: 用于配置输入参数，参数配置通常是只在复位状态下才会发生变化，用的不多</li>
+</ol>
+</li>
+<li>
+<p><strong>wire handshake</strong>:</p>
+<ol>
+<li>ap_vld: 输入信号，通常接单个数据，包含有效信号和输入信号</li>
+<li>ap_ovld:输出信号，通常接单个数据，包含有效信号和输出信号</li>
+<li>ap_ack:只包含有效信号，不包含数据，基本不用</li>
+</ol>
+</li>
+<li>
+<p><strong>Memory Interf</strong>:</p>
+<ol>
+<li>ap_bram:当输入数据类型是数组时使用这种类型接口，可以直接和 Bram 相连</li>
+<li>ap_memory:功能和 ap_bram 相同，只是 ap_bram 在综合时会把有关信号打包在一起,ap_memory 会综 合成多个零散的接口</li>
+<li>ap_fifo:输入数据类型是数组时使用这种类型接口，用于和 fifo 直接相连</li>
+</ol>
+</li>
+</ol>
+<h2 id="hls常用优化">HLS常用优化</h2>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://youlianning.github.io/post/tu-xiang-chu-li-bai-ping-heng-yuan-li-yu-ying-yong/">
+              <h3 class="post-title">
+                下一篇：图像处理：白平衡原理与应用
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">星星之火，可以燎原</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
