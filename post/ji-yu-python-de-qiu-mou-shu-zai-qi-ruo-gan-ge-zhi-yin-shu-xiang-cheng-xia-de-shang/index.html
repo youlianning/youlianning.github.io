@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>基于python的求某数在其若干个质因数相乘下的商 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662555552190">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="from itertools import combinations,permutations
+
+list1 = [2, 2, 2, 3, 3, 3, 5]
+list2=[]
+for n in range(7):
+    c = list(..." />
+    <meta name="keywords" content="python" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1662555552190" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">基于python的求某数在其若干个质因数相乘下的商</h2>
+            <div class="post-date">2022-02-22</div>
+            
+            <div class="post-content" v-pre>
+              <pre><code class="language-python">from itertools import combinations,permutations
+
+list1 = [2, 2, 2, 3, 3, 3, 5]
+list2=[]
+for n in range(7):
+    c = list(set(combinations(list1,n+1)))
+    for key in c:
+        mul = 1
+        for i in key:
+            mul = mul * i
+        list2.append(mul)
+list2.sort()
+for item in list2:
+    print(&quot;1080 / &quot;,item,'=',1080/item)
+
+# 输出结果
+# 1080 /  2 = 540.0
+# 1080 /  3 = 360.0
+# 1080 /  4 = 270.0
+# 1080 /  5 = 216.0
+# 1080 /  6 = 180.0
+# 1080 /  8 = 135.0
+# 1080 /  9 = 120.0
+# 1080 /  10 = 108.0
+# 1080 /  12 = 90.0
+# 1080 /  15 = 72.0
+# 1080 /  18 = 60.0
+# 1080 /  20 = 54.0
+# 1080 /  24 = 45.0
+# 1080 /  27 = 40.0
+# 1080 /  30 = 36.0
+# 1080 /  36 = 30.0
+# 1080 /  40 = 27.0
+# 1080 /  45 = 24.0
+# 1080 /  54 = 20.0
+# 1080 /  60 = 18.0
+# 1080 /  72 = 15.0
+# 1080 /  90 = 12.0
+# 1080 /  108 = 10.0
+# 1080 /  120 = 9.0
+# 1080 /  135 = 8.0
+# 1080 /  180 = 6.0
+# 1080 /  216 = 5.0
+# 1080 /  270 = 4.0
+# 1080 /  360 = 3.0
+# 1080 /  540 = 2.0
+# 1080 /  1080 = 1.0
+
+
+
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/p6AWEh0boD/" class="tag">
+                    python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/ji-yu-python-de-er-fen-cha-zhao/">
+                  <h3 class="post-title">
+                    基于python的二分查找
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

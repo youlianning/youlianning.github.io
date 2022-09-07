@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Python函数式编程 | 远远的博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://youlianning.github.io/favicon.ico?v=1662555552190">
+<link rel="stylesheet" href="https://youlianning.github.io/styles/main.css">
+
+
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://youlianning.github.io/highlight/styles/github-dark.min.css">
+    <script src="https://youlianning.github.io/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <meta name="description" content="个人感受：函数式编程，就是将数据，输入管道中，得到输出结果。并且，输入不变，则输出也不变。
+函数式编程与一般编程的区别：
+
+函数式编程：多个数据，一次录入，得到多个数据结果
+一般编程：多个数据，用上循环，逐个处理
+
+测试例程①
+
+需求说明：..." />
+    <meta name="keywords" content="python" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://youlianning.github.io">
+        <img src="https://youlianning.github.io/images/avatar.png?v=1662555552190" class="site-logo">
+        <h1 class="site-title">远远的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      星星之火，可以燎原
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://youlianning.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Python函数式编程</h2>
+            <div class="post-date">2022-08-08</div>
+            
+            <div class="post-content" v-pre>
+              <p><strong>个人感受</strong>：函数式编程，就是将数据，输入管道中，得到输出结果。并且，输入不变，则输出也不变。</p>
+<p><strong>函数式编程与一般编程的区别</strong>：</p>
+<ol>
+<li>函数式编程：多个数据，一次录入，得到多个数据结果</li>
+<li>一般编程：多个数据，用上循环，逐个处理</li>
+</ol>
+<p><strong>测试例程①</strong></p>
+<blockquote>
+<p>需求说明：对于数据data = [1,2,3,4,5]，要求输出data = [2,4,6,8,10]</p>
+</blockquote>
+<pre><code class="language-python">data = [1, 2, 3, 4, 5, 6]
+
+# 方法1：循环添加
+res1 = []
+for n in data:
+    res1.append(n * 2)
+print(res1)
+
+# 方法2：列表表达式
+res2 = [n * 2 for n in data]
+print(res2)
+
+
+# 方法3：函数式编程
+# 第一步：创建管道函数
+def func(i):
+    return i * 2
+
+
+# 第二步：将数据输入管道
+res3 = map(func, data)
+res3 = list(res3)
+print(res3)
+
+</code></pre>
+<p><strong>点评</strong>：从三种方法的对比可以发现，函数式编程的优点，就是在保证对单个数据的处理不出错的情况下，对多个数据的处理也能不出错。</p>
+<p><strong>测试例程②</strong></p>
+<blockquote>
+<p>需求说明：将摄氏温度，转变为华氏温度：摄氏温度*9/5+32</p>
+</blockquote>
+<pre><code class="language-python">data = [
+    {&quot;city&quot;: &quot;Beijing&quot;, &quot;temp&quot;: 20.8},
+    {&quot;city&quot;: &quot;Changsha&quot;, &quot;temp&quot;: 22.4},
+    {&quot;city&quot;: &quot;Chongqing&quot;, &quot;temp&quot;: 22.8},
+    {&quot;city&quot;: &quot;Guangzhou&quot;, &quot;temp&quot;: 25.1},
+    {&quot;city&quot;: &quot;Shanghai&quot;, &quot;temp&quot;: 20.3},
+    {&quot;city&quot;: &quot;HongKong&quot;, &quot;temp&quot;: 25.9}]
+
+
+# # 方法1：循环添加
+res1 = []
+for item in data:
+    # 复制字典，避免在原字典上修改
+    new_item = item.copy()
+    new_item['temp'] = item['temp'] * 9 / 5 + 32
+    res1.append(new_item)
+
+for item in res1:
+    print(item)
+
+
+# 方法2：列表表达式
+def c_to_f(t):
+    new_t = t.copy()
+    new_t['temp'] = t['temp'] * 9 / 5 + 32
+    return new_t
+
+
+res2 = [c_to_f(n) for n in data]
+for item in res2:
+    print(item)
+
+# 方法3：函数式编程
+# 第一步：创建管道函数
+def c_to_f(t):
+    new_t = t.copy()
+    new_t['temp'] = t['temp'] * 9 / 5 + 32
+    return new_t
+
+
+# 第二步：将数据输入管道
+res3 = map(c_to_f, data)
+res3 = list(res3)
+for item in res3:
+    print(item)
+
+</code></pre>
+<p><strong>点评</strong>：理解函数式编程后，寻找bug的时候会方便很多</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://youlianning.github.io/tag/p6AWEh0boD/" class="tag">
+                    python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://youlianning.github.io/post/lesslessru-he-xue-xi-greatergreater-yue-du-bi-ji/">
+                  <h3 class="post-title">
+                    《如何学习》阅读笔记
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
