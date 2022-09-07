@@ -2,7 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://youlianning.github.io</id>
     <title>远远的博客</title>
+<<<<<<< HEAD
     <updated>2022-09-07T12:59:16.486Z</updated>
+=======
+    <updated>2022-06-04T01:36:53.123Z</updated>
+>>>>>>> 5b12387eb027317eaedcd8fb9a268f4e19c2ade4
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://youlianning.github.io"/>
     <link rel="self" href="https://youlianning.github.io/atom.xml"/>
@@ -11,6 +15,7 @@
     <icon>https://youlianning.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 远远的博客</rights>
     <entry>
+<<<<<<< HEAD
         <title type="html"><![CDATA[《如何成为不完美主义者》阅读笔记]]></title>
         <id>https://youlianning.github.io/post/lesslessru-he-cheng-wei-bu-wan-mei-zhu-yi-zhe-greatergreater-yue-du-bi-ji/</id>
         <link href="https://youlianning.github.io/post/lesslessru-he-cheng-wei-bu-wan-mei-zhu-yi-zhe-greatergreater-yue-du-bi-ji/">
@@ -865,6 +870,8 @@ for item in res3:
 ]]></content>
     </entry>
     <entry>
+=======
+>>>>>>> 5b12387eb027317eaedcd8fb9a268f4e19c2ade4
         <title type="html"><![CDATA[《如何学习》阅读笔记]]></title>
         <id>https://youlianning.github.io/post/lesslessru-he-xue-xi-greatergreater-yue-du-bi-ji/</id>
         <link href="https://youlianning.github.io/post/lesslessru-he-xue-xi-greatergreater-yue-du-bi-ji/">
@@ -1441,4 +1448,470 @@ int PsGpioSetup()
         <content type="html"><![CDATA[<p>参考链接：<a href="https://blog.csdn.net/qq_41873311/article/details/122596244">(79条消息) Vivado HLS生成IP核报错的解决方案_爱学习的诸葛铁锤的博客-CSDN博客_hls生成ip核</a></p>
 ]]></content>
     </entry>
+<<<<<<< HEAD
+=======
+    <entry>
+        <title type="html"><![CDATA[FPGA HLS开发：常见HLS接口综合]]></title>
+        <id>https://youlianning.github.io/post/fpga-hls-kai-fa-chang-jian-hls-jie-kou-zong-he/</id>
+        <link href="https://youlianning.github.io/post/fpga-hls-kai-fa-chang-jian-hls-jie-kou-zong-he/">
+        </link>
+        <updated>2022-04-07T06:42:27.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>HLS接口主要分为三类：</strong></p>
+<ul>
+<li>clock and reset interface</li>
+<li>block level interface (主要综合对象)</li>
+<li>port level interface (主要综合对象)</li>
+</ul>
+<h2 id="block-level-interface">Block Level Interface</h2>
+<p><strong>主要分为三类：</strong></p>
+<ul>
+<li>ap_ctrl_none</li>
+<li>ap_ctrl_hs</li>
+<li>ap_ctrl_chain</li>
+</ul>
+<blockquote>
+<p><strong>注释：</strong> “ap”的头是历史遗留问题，并没有什么具体的意思。Xilinx的HLS工具是2011年从一个叫AutoSEL的公司中购买的，而那个公司管这个工具叫做AutoPilot (ap)；不知道是什么原因这个东西就没改过，所以到现在HLS中重要的信号和datatype仍然以ap_前缀开头。</p>
+<p>注释来源：<a href="https://zhuanlan.zhihu.com/p/97085167">Xilinx HLS中ap前缀的意义 - 知乎 (zhihu.com)</a></p>
+</blockquote>
+<ol>
+<li><strong>ap_ctrl_none</strong>: 没有 Block Level interface</li>
+<li><strong>ap_ctrl_hs</strong>:
+<ul>
+<li>ap_start: 捕捉到上升沿时hls的topfunction开始执行</li>
+<li>ap_idle: 在 topfunction 开始执行之后处于低电平，执行完成之后处于高电平</li>
+<li>ap_ready: 处于高电平时表示 topfunction 准备完毕，开始执行之后处于低电平</li>
+<li>ap_done: 在 topfunction 执行完成之后处于高电平，当 ap_start 捕捉到上升沿之后重新处于低电平</li>
+</ul>
+</li>
+<li><strong>ap_ctrl_chain</strong>: 比 ap_ctrl_hs 多一个 ap_continue 接口，如果在 topfunction 执行完成之后 ap_continue 处于低电平，此时 IP 核会终止运行，只有在 ap_continue 被置于高电平才会开始新 一轮运行。</li>
+</ol>
+<h2 id="port-level-interface">Port Level Interface</h2>
+<p><strong>主要分为4类：</strong></p>
+<ul>
+<li>AXI4 Interface</li>
+<li>No I/O Interface</li>
+<li>wire handshake</li>
+<li>memory Interface</li>
+</ul>
+<ol>
+<li>
+<p><strong>AXI4 Interface</strong>：</p>
+<ol>
+<li>
+<p>axi：axi-stream 接口，包含 side-channel 和 without side-channel 两类，通常用于接外界连续输入的数据，比如我们想把若干组数据从 PS 端送入 PL 端，可以将 IP 核输入设置为 axi类型接口</p>
+</li>
+<li>
+<p>m_axi：master 模式的 axi-full 接口，HLS 作为主模式，从 PS 端读写数据，多用于将数据通过AXI-HP接口送入PS端，与DDR通信</p>
+<p><strong>注意：</strong> 如果将接口设置为 m_axi 模式会涉及到一个读写延时的问题，整体大概在 30cycles 左右， 涉及到一个叫 burst transfer 的优化，用合适的读写 DDR 的方法可以在一定程度上提升数据处理 的整体速度</p>
+</li>
+<li>
+<p>s_axilite: axi-lite 接口，属于轻量级的 axi 接口，通常用于和 PS 端 CPU 数据交互，多和 AXI-GP 接口相连，用于送入 CPU 提供的配置信息或向 CPU 写入配置信息。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>NO I/O Interface</strong>：</p>
+<ol>
+<li>ap_none: 多接单个数据，没有任何相关联的其他信号，属于默认参数接口。</li>
+<li>ap_stable: 用于配置输入参数，参数配置通常是只在复位状态下才会发生变化，用的不多</li>
+</ol>
+</li>
+<li>
+<p><strong>wire handshake</strong>:</p>
+<ol>
+<li>ap_vld: 输入信号，通常接单个数据，包含有效信号和输入信号</li>
+<li>ap_ovld:输出信号，通常接单个数据，包含有效信号和输出信号</li>
+<li>ap_ack:只包含有效信号，不包含数据，基本不用</li>
+</ol>
+</li>
+<li>
+<p><strong>Memory Interf</strong>:</p>
+<ol>
+<li>ap_bram:当输入数据类型是数组时使用这种类型接口，可以直接和 Bram 相连</li>
+<li>ap_memory:功能和 ap_bram 相同，只是 ap_bram 在综合时会把有关信号打包在一起,ap_memory 会综 合成多个零散的接口</li>
+<li>ap_fifo:输入数据类型是数组时使用这种类型接口，用于和 fifo 直接相连</li>
+</ol>
+</li>
+</ol>
+<h2 id="hls常用优化">HLS常用优化</h2>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[图像处理：白平衡原理与应用]]></title>
+        <id>https://youlianning.github.io/post/tu-xiang-chu-li-bai-ping-heng-yuan-li-yu-ying-yong/</id>
+        <link href="https://youlianning.github.io/post/tu-xiang-chu-li-bai-ping-heng-yuan-li-yu-ying-yong/">
+        </link>
+        <updated>2022-04-06T08:23:32.000Z</updated>
+        <content type="html"><![CDATA[<p>ITU在BT.601中规定，wr=0.299，wb=0.114，wg=1-wb-wr=0.587。</p>
+<p>所以可得变换矩阵</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi mathvariant="bold-italic">Y</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>C</mi><mi>b</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>C</mi><mi>r</mi></msub></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow><mo>=</mo><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.299</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.587</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.114</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.169</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.331</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.500</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.500</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.419</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.081</mn></mrow></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow><mo>⋅</mo><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>R</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>G</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>B</mi></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left(\begin{array}{l}
+\boldsymbol{Y} \\
+C_{b} \\
+C_{r}
+\end{array}\right)=\left(\begin{array}{rrr}
+0.299 &amp; 0.587 &amp; 0.114 \\
+-0.169 &amp; -0.331 &amp; 0.500 \\
+0.500 &amp; -0.419 &amp; -0.081
+\end{array}\right) \cdot\left(\begin{array}{l}
+R \\
+G \\
+B
+\end{array}\right)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.25555em;">Y</span></span></span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">b</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">2</span><span class="mord">9</span><span class="mord">9</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">6</span><span class="mord">9</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord">0</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord">8</span><span class="mord">7</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">3</span><span class="mord">3</span><span class="mord">1</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">4</span><span class="mord">1</span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord">0</span><span class="mord">0</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">8</span><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">G</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>R</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>G</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>B</mi></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow><mo>=</mo><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1.000</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.000</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1.403</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1.000</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.344</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>0.714</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1.000</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1.773</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.000</mn></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow><mo>⋅</mo><mrow><mo fence="true">(</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>Y</mi></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>C</mi><mi>b</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>C</mi><mi>r</mi></msub></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left(\begin{array}{l}
+R \\
+G \\
+B
+\end{array}\right)=\left(\begin{array}{rrr}
+1.000 &amp; 0.000 &amp; 1.403 \\
+1.000 &amp; -0.344 &amp; -0.714 \\
+1.000 &amp; 1.773 &amp; 0.000
+\end{array}\right) \cdot\left(\begin{array}{l}
+Y \\
+C_{b} \\
+C_{r}
+\end{array}\right)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">G</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">3</span><span class="mord">4</span><span class="mord">4</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">.</span><span class="mord">7</span><span class="mord">7</span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">.</span><span class="mord">4</span><span class="mord">0</span><span class="mord">3</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span><span class="mord">1</span><span class="mord">4</span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:3.60004em;vertical-align:-1.55002em;"></span><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎝</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎛</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span><span class="mord"><span class="mtable"><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05em;"><span style="top:-4.21em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span><span style="top:-3.0099999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">b</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-1.8099999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.5500000000000007em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:2.05002em;"><span style="top:-2.2500000000000004em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎠</span></span></span><span style="top:-4.05002em;"><span class="pstrut" style="height:3.1550000000000002em;"></span><span class="delimsizinginner delim-size4"><span>⎞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.55002em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>由于计算过程中可能出现负数，所以需要进行取绝对值<br>
+Y = 0.299 R + 0.587 G + 0.114 B<br>
+Cb = -0.1687 R - 0.3313 G + 0.5 B + 128<br>
+Cr = 0.5 R - 0.4187 G - 0.0813 B + 128<br>
+R = Y + 1.402 (Cr-128)<br>
+G= Y - 0.34414 (Cb-128) - 0.71414 (Cr-128)<br>
+B= Y + 1.772 (Cb-128)</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FPGA Vitis开发：DMA驱动案例]]></title>
+        <id>https://youlianning.github.io/post/fpga-vitis-kai-fa-dma-qu-dong-an-li/</id>
+        <link href="https://youlianning.github.io/post/fpga-vitis-kai-fa-dma-qu-dong-an-li/">
+        </link>
+        <updated>2022-04-05T11:24:48.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>配置思路：</strong></p>
+<ol>
+<li>定义设备ID，发送和接收数据数组</li>
+<li>定义中断处理函数</li>
+<li>dma配制</li>
+<li>清除cache</li>
+<li>dma传输数据</li>
+<li>清除cache</li>
+<li>处理数据</li>
+</ol>
+<p><strong>初始数据定义</strong></p>
+<pre><code class="language-C">#include &quot;xaxidma.h&quot;	//dma
+#include &quot;xparameters.h&quot;//设备
+#include &quot;xscugic.h&quot;	//中断
+#include &quot;xil_printf.h&quot;	//串口
+
+#define DMA_DEV_ID 		XPAR_AXIDMA_0_DEVICE_ID						//DMA设备ID
+#define INT_DEVICE_ID 	XPAR_SCUGIC_SINGLE_DEVICE_ID				//中断设备ID
+#define INTR_S2MM_ID	XPAR_FABRIC_AXIDMA_0_S2MM_INTROUT_VEC_ID	//DMA接收中断ID
+
+#define FIFO_DATABYTE 	4							//FIFO内单个数据4字节
+#define TEST_COUNT 		80							//测试数据列长80个数据
+#define MAX_PKT_LEN 	TEST_COUNT*FIFO_DATABYTE	//分配地址长度
+
+#define TEST_START_VALUE	0xc						//初始测试数据
+
+#define NUMBER_OF_TRANSFERS	2						//测试次数
+
+int XAxiDma_Setup(u16 DeviceId);					//DMA配置函数
+static int CheckData(void);							//中断处理函数
+int SetInterruptInit(XScuGic *InstancePtr, u16 IntrID, XAxiDma *XAxiDmaPtr);	//中断配置函数
+
+XScuGic INST;	//中断控制器实例
+XAxiDma AxiDma;	//XAxiDma 实例
+
+u8 TxBufferPtr[MAX_PKT_LEN];	//发送数据列
+u8 RxBufferPtr[MAX_PKT_LEN];	//接收数据列
+</code></pre>
+<p><strong>主程序</strong></p>
+<pre><code class="language-c">int main()
+{
+	int Status;
+	xil_printf(&quot;\r\n--- Entering main() --- \r\n&quot;);
+
+	Status=XAxiDma_Setup(DMA_DEV_ID);
+	if(Status!=XST_SUCCESS){
+		xil_printf(&quot;XAxiDma Test Failed\r\n&quot;);
+		return XST_FAILURE;
+	}
+
+	xil_printf(&quot;Successfully Ran XAxiDma Test\r\n&quot;);
+	xil_printf(&quot;---Exiting main()---\r\n&quot;);
+	return XST_SUCCESS;
+}
+</code></pre>
+<p><strong>中断配置函数</strong></p>
+<pre><code class="language-c">int SetInterruptInit(XScuGic *InstancePtr, u16 IntrID, XAxiDma *XAxiDmaPtr)
+{
+
+	XScuGic_Config * Config ;
+	int Status ;
+
+	//初始化中断控制器驱动
+	Config = XScuGic_LookupConfig(INT_DEVICE_ID) ;
+	Status = XScuGic_CfgInitialize(&amp;INST, Config, Config-&gt;CpuBaseAddress) ;
+	if (Status != XST_SUCCESS)
+		return XST_FAILURE ;
+
+
+	//设置中断优先级和触发类型
+	//XScuGic_SetPriorityTriggerType(int_ins_ptr, tx_intr_id,0xa0,0x3);
+	//XScuGic_SetPriorityTriggerType(int_ins_ptr,rx_intr_id,0xA0,0x3);
+
+	//为中断设置中断处理函数
+	Status = XScuGic_Connect(InstancePtr, IntrID,
+			(Xil_ExceptionHandler)CheckData,	//此处写入中断处理函数
+			XAxiDmaPtr) ;
+	if (Status != XST_SUCCESS) {
+			return Status;
+		}
+
+	//使能中断
+	XScuGic_Enable(InstancePtr, IntrID) ;
+
+	//启用来自硬件的中断
+	Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler) XScuGic_InterruptHandler,InstancePtr);
+	Xil_ExceptionEnable();
+
+	return XST_SUCCESS ;
+
+}
+</code></pre>
+<p><strong>DMA配置函数</strong></p>
+<pre><code class="language-c">int XAxiDma_Setup(u16 DeviceId)
+{
+	XAxiDma_Config *CfgPtr;
+	int Status;
+	int Tries = NUMBER_OF_TRANSFERS;
+	int Index;
+	u8 Value;
+
+	//查找DMA硬件配置信息
+	CfgPtr = XAxiDma_LookupConfig(DeviceId);
+	if (!CfgPtr) {
+		xil_printf(&quot;No config found for %d\r\n&quot;, DeviceId);
+		return XST_FAILURE;
+	}
+
+	//初始化DMA引擎
+	Status = XAxiDma_CfgInitialize(&amp;AxiDma, CfgPtr);
+	if (Status != XST_SUCCESS) {
+		xil_printf(&quot;Initialization failed %d\r\n&quot;, Status);
+		return XST_FAILURE;
+	}
+
+	//判断有无使能sg模式，如果使能则返回错误
+	if(XAxiDma_HasSg(&amp;AxiDma)){
+		xil_printf(&quot;Device configured as SG mode \r\n&quot;);
+		return XST_FAILURE;
+	}
+
+	//中断函数初始化
+	Status = SetInterruptInit(&amp;INST,INTR_S2MM_ID, &amp;AxiDma) ;
+	if (Status != XST_SUCCESS)
+		         return XST_FAILURE ;
+
+	/* Disable MM2S interrupt, Enable S2MM interrupt */
+	//使能中断
+	//当DMA向DDR写完数据后，发送中断
+	XAxiDma_IntrEnable(&amp;AxiDma, XAXIDMA_IRQ_IOC_MASK,
+						XAXIDMA_DEVICE_TO_DMA);
+	XAxiDma_IntrDisable(&amp;AxiDma, XAXIDMA_IRQ_ALL_MASK,
+						XAXIDMA_DMA_TO_DEVICE);
+
+	//初始化发送数据数组
+	Value = TEST_START_VALUE;
+	for(Index = 0; Index &lt; MAX_PKT_LEN; Index ++) {
+			TxBufferPtr[Index] = Value;
+
+			Value = (Value + 1) &amp; 0xFF;
+	}
+	/* Flush the SrcBuffer before the DMA transfer, in case the Data Cache is enabled*/
+	//在发送数据前把cache里的数据写入到DDR中
+	/*由于DMA需要访问DDR3，而CPU与DDR3之间是通过Cache交互的，数据暂存在Cache里，
+	可能没有真正刷新到DDR3，如果外部设备也就是DMA想要读取
+	DDR3的值，必须将Cache里的数据刷新到DDR3中，这样DMA才能读到正确的值。调用
+	Xil_DCacheFlushRange函数，需要给出内存地址和长度。 */
+	Xil_DCacheFlushRange((UINTPTR)TxBufferPtr, MAX_PKT_LEN);
+	Xil_DCacheFlushRange((UINTPTR)RxBufferPtr, MAX_PKT_LEN);
+
+	for(Index = 0; Index &lt; Tries; Index ++) {
+			Status = XAxiDma_SimpleTransfer(&amp;AxiDma,(UINTPTR) TxBufferPtr,MAX_PKT_LEN, XAXIDMA_DMA_TO_DEVICE);
+			if (Status != XST_SUCCESS) {
+				return XST_FAILURE;
+			}
+
+			//虽然看起来读和写都同时打开，但由于stream流的协议，会等待FIFO里有数据才开始传输
+		    Status = XAxiDma_SimpleTransfer(&amp;AxiDma,(UINTPTR) RxBufferPtr,MAX_PKT_LEN, XAXIDMA_DEVICE_TO_DMA);
+			if (Status != XST_SUCCESS) {
+				return XST_FAILURE;
+			}
+
+			//确保cache写入到DDR当中
+			while ((XAxiDma_Busy(&amp;AxiDma,XAXIDMA_DEVICE_TO_DMA)) ||
+				(XAxiDma_Busy(&amp;AxiDma,XAXIDMA_DMA_TO_DEVICE)))
+					{
+					/* Wait */
+			}
+
+		}
+
+		/* Test finishes successfully
+		 */
+		return XST_SUCCESS;
+}
+</code></pre>
+<p><strong>中断处理函数</strong></p>
+<pre><code class="language-c">static int CheckData(void)
+{
+	u8 *RxPacket;
+	int Index = 0;
+	u8 Value;
+
+	RxPacket = RxBufferPtr;
+	Value = TEST_START_VALUE;
+
+	xil_printf(&quot;Enter Interrupt\r\n&quot;);
+	/*清除中断标志位*/
+	XAxiDma_IntrAckIrq(&amp;AxiDma, XAXIDMA_IRQ_IOC_MASK,XAXIDMA_DEVICE_TO_DMA) ;
+	/* Invalidate the DestBuffer before receiving the data, in case the Data Cache is enabled*/
+	/*在中断服务程序中，首先清除中断，由于 DDR3 中的数据已经更新，但 Cache 中的数据并
+	没有更新，CPU 如果想从 DDR3 中读取数据，需要调用 Xil_DCacheInvalidateRang 函数，将
+	Cache 数据作废，这样 CPU 就能从 DDR3 中读取正确的数据。同样也要给出内存地址和长
+	度。*/
+	Xil_DCacheInvalidateRange((UINTPTR)RxPacket, MAX_PKT_LEN);
+	//数据比对
+	for(Index = 0; Index &lt; MAX_PKT_LEN; Index++) {
+		if (RxPacket[Index] != Value) {
+			xil_printf(&quot;Data error %d: %x/%x\r\n&quot;,
+			Index, (unsigned int)RxPacket[Index],
+				(unsigned int)Value);
+
+			return XST_FAILURE;
+		}
+		Value = (Value + 1) &amp; 0xFF;
+	}
+	return XST_SUCCESS;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FPGA Verilog语法：generate的用法]]></title>
+        <id>https://youlianning.github.io/post/fpga-verilog-yu-fa-generate-de-yong-fa/</id>
+        <link href="https://youlianning.github.io/post/fpga-verilog-yu-fa-generate-de-yong-fa/">
+        </link>
+        <updated>2022-04-05T05:28:12.000Z</updated>
+        <content type="html"><![CDATA[<p>本文转载自：<a href="https://blog.51cto.com/lihaichuan/1118866">verilog中generate语句的用法_李海川的技术博客_51CTO博客</a></p>
+<p>**作用：**生成语句可以动态地生成verilog代码，当对矢量中的多个位进行 重复操作 时，或者当进行多个模块的实例引用的重复操作时，或者根据参数的定义来确定程序中是否应该包含某段Verilog代码的时候，使用生成语句能大大简化程序的编写过程。</p>
+<p>生成语句生成的实例范围，关键字generate-endgenerate用来指定该范围。生成实例可以是以下的一个或多个类型：</p>
+<table>
+<thead>
+<tr>
+<th>（1）模块</th>
+<th>（2）用户定义原语</th>
+<th>（3）门级语句</th>
+<th>（4）连续赋值语句</th>
+<th>（5）initial和always块</th>
+</tr>
+</thead>
+</table>
+<p>​    generate语句有【generate-for】，【generate-if】，【generate-case】三种语句。</p>
+<blockquote>
+<p>generate-for语句</p>
+<p>（1) 必须有genvar关键字定义for语句的变量。</p>
+<p>（2）for语句的内容必须加begin和end（即使就一句）。</p>
+<p>（3）for语句必须有个名字。</p>
+</blockquote>
+<pre><code class="language-verilog">//例1：组合逻辑实现
+module test(bin,gray);
+
+    parameter SIZE=8;
+
+    output [SIZE-1:0] bin;
+
+    input [SIZE-1:0] gray;
+
+    genvar i; //genvar i;也可以定义到generate语句里面
+
+    generate
+
+       for(i=0;i&lt;SIZE;i=i+1)
+
+       begin:bit
+
+           assign bin[i]=^gray[SIZE-1:i];
+
+       end
+
+    endgenerate
+
+endmodule   
+
+//等同于下面语句
+
+assign bin[0]=^gray[SIZE-1:0];
+
+assign bin[1]=^gray[SIZE-1:1];
+
+assign bin[2]=^gray[SIZE-1:2];
+
+assign bin[3]=^gray[SIZE-1:3];
+
+assign bin[4]=^gray[SIZE-1:4];
+
+assign bin[5]=^gray[SIZE-1:5];
+
+assign bin[6]=^gray[SIZE-1:6];
+
+assign bin[7]=^gray[SIZE-1:7];
+</code></pre>
+<pre><code class="language-verilog">//例2:时序逻辑实现
+
+generate
+
+    genvar i;
+
+    for(i=0;i&lt;SIZE;i=i+1)
+
+    begin:shifter
+
+       always@(posedge clk)
+
+           shifter[i]&lt;=(i==0)?din:shifter[i-1];
+
+    end
+
+endgenerate
+
+//等同于下面语句
+
+always@(posedge clk)
+
+    shifter[0]&lt;=din;
+
+always@(posedge clk)
+
+    shifter[1]&lt;=shifter[0];
+
+always@(posedge clk)
+
+    shifter[2]&lt;=shifter[1];
+
+.................
+
+    ......................
+
+always@(posedge clk)
+
+    shifter[SIZE]&lt;=shifter[SIZE-1];
+
+//generate-if，generate-case和generate-for语句类似。
+</code></pre>
+]]></content>
+    </entry>
+>>>>>>> 5b12387eb027317eaedcd8fb9a268f4e19c2ade4
 </feed>
